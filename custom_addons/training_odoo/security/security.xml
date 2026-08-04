@@ -1,0 +1,48 @@
+<odoo>
+ 
+ 
+    <!-- Membuat Category Group Training -->
+ 
+    <record id="module_category_training_odoo" model="ir.module.category">
+        <field name="name">Training</field>
+    </record>
+
+    <record id="res_groups_privilege_training" model="res.groups.privilege">
+        <field name="name">Training</field>
+        <field name="category_id" ref="module_category_training_odoo"/>
+    </record>
+ 
+    <!-- Membuat Group Training -->
+ 
+    <record id="group_training_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_training"/>
+    </record>
+ 
+    <record id="group_training_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_training"/>
+        <field name="implied_ids" eval="[(4, ref('group_training_user'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Membuat Record Rules Course -->
+ 
+<record id="training_course_own_rule" model="ir.rule">
+    <field name="name">Own Course</field>
+    <field name="model_id" ref="model_training_course"/>
+    <field name="domain_force">['|', ('user_id','=',user.id), ('user_id','=',False)]</field>
+    <field name="groups" eval="[(4, ref('group_training_user'))]"/>
+</record>
+ 
+<record id="training_course_all_rule" model="ir.rule">
+    <field name="name">All Course</field>
+    <field name="model_id" ref="model_training_course"/>
+    <field name="domain_force">[(1,'=',1)]</field>
+    <field name="groups" eval="[(4, ref('group_training_manager'))]"/>
+</record>
+ 
+ 
+</odoo>
